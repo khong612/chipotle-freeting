@@ -37,15 +37,14 @@ def get_tweets(user, pages=25):
                 # but their content doesn't look like a tweet's content
                 try:
                     text = tweet.find('.tweet-text')[0].full_text
+                    tweets.append({
+                        'text': text
+                    })
+                    break
                 except IndexError:  # issue #50
                     continue
 
-                tweets.append({
-                    'text': text
-                })
-
             last_tweet = html.find('.stream-item')[-1].attrs['data-item-id']
-
             for tweet in tweets:
                 if tweet:
                     tweet['text'] = re.sub('http', ' http', tweet['text'], 1)
