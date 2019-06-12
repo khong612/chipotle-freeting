@@ -4,6 +4,9 @@ import time
 from twitter_scraper import get_tweets
 
 text = ""
+new_code = ""
+old_code = "FREEXXXXX"
+
 
 def mostRecentTweet():
     global text
@@ -13,23 +16,29 @@ def mostRecentTweet():
             text = tweet["text"]
             print(text)
         end = time.time()
-        #print("Retrieved in: " + str(end - start) + " seconds!")
+        print("Retrieved in: " + str(end - start) + " seconds!")
 
-def printText():
-    print(text)
-    #time.sleep(0.5)
+
+def getCode():
+    global new_code
+    words = text.split()
+    for word in words:
+        if "FREE" in word:
+            new_code = word
+
+
+def sendText():
+    global old_code
+    if new_code is not old_code:
+        pass
+    pass
+
 
 t1 = threading.Thread(target=mostRecentTweet)
-t2 = threading.Thread(target=mostRecentTweet)
-t3 = threading.Thread(target=mostRecentTweet)
-t4 = threading.Thread(target=printText)
+t2 = threading.Thread(target=sendText)
 
 t1.start()
 t2.start()
-t3.start()
-t4.start()
 
 t1.join()
 t2.join()
-t3.join()
-t4.join()
