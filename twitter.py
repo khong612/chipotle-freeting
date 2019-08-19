@@ -1,6 +1,6 @@
 import re
-from requests_html import HTMLSession, HTML
 from datetime import datetime
+from requests_html import HTMLSession, HTML
 
 session = HTMLSession()
 

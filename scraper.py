@@ -1,41 +1,43 @@
-import re
 import threading
 import time
-from twitter_scraper import get_tweets
+from messenger import notify
+from twitter import get_tweets
 
-text = ""
+new_text = ""
+old_text = ""
 new_code = ""
-old_code = "FREEXXXXX"
+old_code = ""
 
 
-def mostRecentTweet():
-    global text
+def most_recent_tweet():
+    global new_text
+    global old_text
+    global new_code
     while True:
         start = time.time()
         for tweet in get_tweets("chipotletweets", pages=1):
-            text = tweet["text"]
-            print(text)
+            new_text = tweet["text"]
+            print(new_text)
         end = time.time()
-        print("Retrieved in: " + str(end - start) + " seconds!")
+        if new_text != old_text:
+            words = new_text.split(" ")
+            for word in words:
+                if "FREE" in word:
+                    new_code = word
+            old_text = new_text
+        print("Retrieved in " + str(end - start)[:5] + " seconds!")
 
 
-def getCode():
-    global new_code
-    words = text.split()
-    for word in words:
-        if "FREE" in word:
-            new_code = word
-
-
-def sendText():
+def send_text():
     global old_code
-    if new_code is not old_code:
-        pass
-    pass
+    while True:
+        if new_code != old_code:
+            notify(new_code)
+            old_code = new_code
 
 
-t1 = threading.Thread(target=mostRecentTweet)
-t2 = threading.Thread(target=sendText)
+t1 = threading.Thread(target=most_recent_tweet)
+t2 = threading.Thread(target=send_text)
 
 t1.start()
 t2.start()
